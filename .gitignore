@@ -1,0 +1,16 @@
+################################
+## White list based gitignore ##
+################################
+
+# forbidden
+*
+.*
+
+# allowed
+!.gitignore
+!.gitattributes
+!.drone.yml
+!submit.cfg
+!*.py
+!*.ipynb
+!*.md

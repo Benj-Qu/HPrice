@@ -1,0 +1,15 @@
+kind: pipeline
+type: ssh
+name: default
+server:
+  host: 111.186.58.48:4710
+  user: judge
+  ssh_key:
+    from_secret: drone-stat471
+steps:
+- name: pre-checks
+  commands:
+  - stat471.sh init 
+- name: evaluate
+  commands:
+  - stat471.sh evaluate 
