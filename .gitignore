@@ -12,5 +12,5 @@
 !.drone.yml
 !submit.cfg
 !*.py
-!*.ipynb
+!Project - part2.ipynb
 !*.md
