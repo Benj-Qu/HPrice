@@ -26,7 +26,7 @@ class Model():
 		## Load your model 
 		## Remember to prepend your model file with the path 
 		## The following code is just an example, feel free to modify 
-		m = load(os.path.join(self.dir, 'Your_ID_goes_to_here-1.gz'))
+		m = load(os.path.join(self.dir, '519370910113-1.gz'))
 		
 		
-		return m.predict(data)
+		return np.exp(m.predict(data))
