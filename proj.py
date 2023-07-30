@@ -12,6 +12,7 @@ from sklearn.preprocessing import FunctionTransformer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
+from sklearn.ensemble import RandomForestRegressor
 
 
 
@@ -27,6 +28,6 @@ def create_pipeline():
     )
     pipeline = Pipeline([
         ('preprocessor', preproc), 
-        ('lin-reg', LinearRegression()),
+        ('lin-reg', RandomForestRegressor()),
     ])
     return pipeline
