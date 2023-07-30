@@ -28,6 +28,6 @@ def create_pipeline():
     )
     pipeline = Pipeline([
         ('preprocessor', preproc), 
-        ('lin-reg', RandomForestRegressor()),
+        ('lin-reg', LinearRegression()),
     ])
     return pipeline
