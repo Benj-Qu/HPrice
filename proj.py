@@ -31,10 +31,7 @@ def create_pipeline():
             (
                 'categorical_cols', 
                 OneHotEncoder(drop='first'), 
-                [
-                    'Modeling Group', 'Use', 'Wall Material', 'Roof Material', 'Garage 1 Material', 'Garage 2 Material', 
-                    'Basement', 'Basement Finish', 'Central Heating', 'Other Heating', 'Central Air', 'Attic Type', 'Attic Finish', 'Design Plan'
-                ]
+                categoricals()
             )
         ],
         remainder='passthrough'
