@@ -28,28 +28,29 @@ def create_pipeline():
     preproc = ColumnTransformer(
         transformers=[
             ('log_trans', FunctionTransformer(np.log), ['Land Square Feet']),
-            (
-                'categorical_cols', 
-                OneHotEncoder(drop='first'), 
-                categoricals()
-            )
+            ('categorical_cols', OneHotEncoder(drop='first'), categoricals())
         ],
         remainder='passthrough'
     )
     pipeline = Pipeline([
         ('category_encoding', FunctionTransformer(substitute_categorical_variables)),
-        # ('one_hot_encoding', FunctionTransformer(one_hot_encode)),
+        ('extract_description', FunctionTransformer(extract_description)),
         ('preprocessor', preproc), 
+        # ('drop_cols', FunctionTransformer(drop_columns)),
         ('lin-reg', RandomForestRegressor()),
     ])
     return pipeline
+
+def drop_columns(data):
+    data = pd.DataFrame(data)
+    return data.drop(['Other Improvements', 'Description'], axis=1)
 
 def extract_description(data):
     with_rooms = data.copy()
     with_rooms["Bedrooms"] = with_rooms["Description"].str.findall(".*(\d+) of which are bedrooms.*").str[0].fillna(0).astype(int)
     with_rooms["Rooms"] = with_rooms["Description"].str.findall(".*(\d+) rooms.*").str[0].fillna(0).astype(int)
     with_rooms["Bathrooms"] = with_rooms["Description"].str.findall(".*(\d+) of which are bathrooms.*").str[0].fillna(0).astype(int)
-    return with_rooms
+    return with_rooms.drop('Description', axis=1)
 
 def one_hot_encode(data):
     for categorical in categoricals():
