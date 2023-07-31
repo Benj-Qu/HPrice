@@ -43,7 +43,7 @@ def create_pipeline():
         ('category_encoding', FunctionTransformer(substitute_categorical_variables)),
         # ('one_hot_encoding', FunctionTransformer(one_hot_encode)),
         ('preprocessor', preproc), 
-        ('lin-reg', LinearRegression()),
+        ('lin-reg', RandomForestRegressor()),
     ])
     return pipeline
 
