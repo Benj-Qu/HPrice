@@ -51,7 +51,7 @@ def one_hot_encode(data):
     def custom_combiner(feature, category):
         return feature + " " + str(category)
     for categorical in categoricals():
-        enc = OneHotEncoder(drop='first', handle_unknown='ignore', feature_name_combiner=custom_combiner)
+        enc = OneHotEncoder(drop='first', handle_unknown='ignore')
         enc.fit(data[[categorical]])
         new_cols = pd.DataFrame(enc.transform(data[[categorical]]).todense(),
             columns=enc.get_feature_names_out(),
