@@ -25,7 +25,7 @@ def categoricals():
         'Garage 1 Size', 'Garage 1 Material', 'Garage 1 Attachment', 'Garage 1 Area', 
         'Garage 2 Size', 'Garage 2 Material', 'Garage 2 Attachment', 'Garage 2 Area', 
         'Porch', 'Repair Condition', 'Multi Code', 'Use', 
-        'Property Class', 'Story']
+        'Property Class']
     return categoricals
 
 def create_pipeline():
@@ -50,16 +50,19 @@ def create_pipeline():
 
 def drop_columns(data):
     return data.drop(
-        ['Other Improvements', 'Neighborhood Code', 'Town Code', 'Address'], 
+        [
+            'Other Improvements', 'Neighborhood Code', 'Town Code'
+            # , 'Longitude', 'Latitude', 'Site Desirability'
+        ], 
     axis=1)
 
 def extract_description(data):
     with_rooms = data.copy()
-    with_rooms['Sold Year'] = with_rooms['Description'].str.findall(".*sold on \d+/\d+/(\d+).*").str[0].fillna(2000).astype(int)
-    with_rooms['Sold Month'] = with_rooms['Description'].str.findall(".*sold on (\d+)/\d+/\d+.*").str[0].fillna(1).astype(int)
-    with_rooms['Sold Day'] = with_rooms['Description'].str.findall(".*sold on \d+/(\d+)/\d+.*").str[0].fillna(1).astype(int)
-    with_rooms['Story'] = with_rooms['Description'].str.findall(".*(.*) houeshold.*").str[0].fillna('')
-    with_rooms['Address'] = with_rooms['Description'].str.findall(".*located at (.*).*").str[0].fillna('')
+    # with_rooms['Sold Year'] = with_rooms['Description'].str.findall(".*sold on \d+/\d+/(\d+).*").str[0].fillna(2000).astype(int)
+    # with_rooms['Sold Month'] = with_rooms['Description'].str.findall(".*sold on (\d+)/\d+/\d+.*").str[0].fillna(1).astype(int)
+    # with_rooms['Sold Day'] = with_rooms['Description'].str.findall(".*sold on \d+/(\d+)/\d+.*").str[0].fillna(1).astype(int)
+    # with_rooms['Story'] = with_rooms['Description'].str.findall(".*(.*) houeshold.*").str[0].fillna('')
+    # with_rooms['Address'] = with_rooms['Description'].str.findall(".*located at (.*).*").str[0].fillna('')
     with_rooms['Rooms'] = with_rooms['Description'].str.findall(".*(\d+) rooms.*").str[0].fillna(1).astype(int)
     with_rooms['Bedrooms'] = with_rooms['Description'].str.findall(".*(\d+) of which are bedrooms.*").str[0].fillna(1).astype(int)
     with_rooms['Bathrooms'] = with_rooms['Description'].str.findall(".*(\d+) of which are bathrooms.*").str[0].fillna(0).astype(int)
