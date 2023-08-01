@@ -38,8 +38,8 @@ def create_pipeline():
         remainder='passthrough'
     )
     pipeline = Pipeline([
-        ('extract_expense_neighbor', FunctionTransformer(find_expensive_neighborhoods)),
-        ('extract_expense_town', FunctionTransformer(find_expensive_towns)),
+        # ('extract_expense_neighbor', FunctionTransformer(find_expensive_neighborhoods)),
+        # ('extract_expense_town', FunctionTransformer(find_expensive_towns)),
         ('extract_description', FunctionTransformer(extract_description)),
         ('category_encoding', FunctionTransformer(substitute_categorical_variables)),
         ('drop_cols', FunctionTransformer(drop_columns)),
@@ -54,7 +54,7 @@ def drop_columns(data):
             'Other Improvements', 'Neighborhood Code', 'Town Code'
             # , 'Longitude', 
             # , 'Latitude'
-            , 'Site Desirability'
+            # , 'Site Desirability'
         ], 
     axis=1)
 
