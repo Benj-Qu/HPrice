@@ -38,8 +38,8 @@ def create_pipeline():
         remainder='passthrough'
     )
     pipeline = Pipeline([
-        # ('extract_expense_neighbor', FunctionTransformer(find_expensive_neighborhoods)),
-        # ('extract_expense_town', FunctionTransformer(find_expensive_towns)),
+        ('extract_expense_neighbor', FunctionTransformer(find_expensive_neighborhoods)),
+        ('extract_expense_town', FunctionTransformer(find_expensive_towns)),
         ('extract_description', FunctionTransformer(extract_description)),
         ('category_encoding', FunctionTransformer(substitute_categorical_variables)),
         ('drop_cols', FunctionTransformer(drop_columns)),
@@ -72,12 +72,18 @@ def extract_description(data):
 
 def find_expensive_neighborhoods(data):
     expensive = [106,580,117,67,94,93,96,64,48,400,461,95,116,83,44,18,143,74,25,166]
-    data['Expensive Neighborhood'] = data['Neighborhood Code'].apply(lambda x: int(x) in expensive)
+    data['Expensive Neighborhood 20'] = data['Neighborhood Code'].apply(lambda x: int(x) in expensive)
+    expensive = [106,580,117,67,94,93,96,64,48,400]
+    data['Expensive Neighborhood 10'] = data['Neighborhood Code'].apply(lambda x: int(x) in expensive)
+    expensive = [106,580,117,67,94]
+    data['Expensive Neighborhood 5'] = data['Neighborhood Code'].apply(lambda x: int(x) in expensive)
     return data
 
-def find_expensive_towns(data, n=3, metric=np.median):
-    expensive = [23, 74, 73, 33, 25, 10, 17, 27, 19, 75]
-    data['Expensive Town'] = data['Town Code'].apply(lambda x: int(x) in expensive)
+def find_expensive_towns(data):
+    expensive = [23,74,73,33,25,10,17,27,19,75]
+    data['Expensive Town 10'] = data['Town Code'].apply(lambda x: int(x) in expensive)
+    expensive = [23,74,73,33,25]
+    data['Expensive Town 5'] = data['Town Code'].apply(lambda x: int(x) in expensive)
     return data
 
 def substitute_categorical_variables(data):
