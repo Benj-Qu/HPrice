@@ -22,7 +22,8 @@ def categoricals():
         'Cathedral Ceiling', 'Construction Quality', 'Site Desirability', 
         'Garage 1 Size', 'Garage 1 Material', 'Garage 1 Attachment', 'Garage 1 Area', 
         'Garage 2 Size', 'Garage 2 Material', 'Garage 2 Attachment', 'Garage 2 Area', 
-        'Porch', 'Repair Condition', 'Multi Code', 'Use']
+        'Porch', 'Repair Condition', 'Multi Code', 'Use', 
+        'Property Class']
     return categoricals
 
 def create_pipeline():
@@ -35,17 +36,17 @@ def create_pipeline():
         remainder='passthrough'
     )
     pipeline = Pipeline([
+        ('drop_cols', FunctionTransformer(drop_columns)),
         ('category_encoding', FunctionTransformer(substitute_categorical_variables)),
         ('extract_description', FunctionTransformer(extract_description)),
         ('preprocessor', preproc), 
-        # ('drop_cols', FunctionTransformer(drop_columns)),
-        ('lin-reg', GradientBoostingRegressor()),
+        ('lin-reg', RandomForestRegressor()),
     ])
     return pipeline
 
 def drop_columns(data):
-    data = pd.DataFrame(data)
-    return data.drop(['Other Improvements', 'Description'], axis=1)
+    data = data.copy()
+    return data.drop(['Other Improvements', 'Neighborhood Code', 'Town Code'], axis=1)
 
 def extract_description(data):
     with_rooms = data.copy()
