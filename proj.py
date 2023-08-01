@@ -73,17 +73,11 @@ def extract_description(data):
 def find_expensive_neighborhoods(data):
     expensive = [106,580,117,67,94,93,96,64,48,400,461,95,116,83,44,18,143,74,25,166]
     data['Expensive Neighborhood 20'] = data['Neighborhood Code'].apply(lambda x: int(x) in expensive)
-    expensive = [106,580,117,67,94,93,96,64,48,400]
-    data['Expensive Neighborhood 10'] = data['Neighborhood Code'].apply(lambda x: int(x) in expensive)
-    expensive = [106,580,117,67,94]
-    data['Expensive Neighborhood 5'] = data['Neighborhood Code'].apply(lambda x: int(x) in expensive)
     return data
 
 def find_expensive_towns(data):
     expensive = [23,74,73,33,25,10,17,27,19,75]
     data['Expensive Town 10'] = data['Town Code'].apply(lambda x: int(x) in expensive)
-    expensive = [23,74,73,33,25]
-    data['Expensive Town 5'] = data['Town Code'].apply(lambda x: int(x) in expensive)
     return data
 
 def substitute_categorical_variables(data):
