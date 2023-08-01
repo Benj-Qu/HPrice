@@ -21,7 +21,7 @@ def categoricals():
     categoricals = ['Modeling Group', 'Apartments', 'Wall Material', 'Roof Material', 
         'Basement', 'Basement Finish', 'Central Heating', 'Other Heating', 
         'Central Air', 'Attic Type', 'Attic Finish', 'Design Plan', 
-        'Cathedral Ceiling', 'Construction Quality', 'Site Desirability', 
+        'Cathedral Ceiling', 'Construction Quality', 
         'Garage 1 Size', 'Garage 1 Material', 'Garage 1 Attachment', 'Garage 1 Area', 
         'Garage 2 Size', 'Garage 2 Material', 'Garage 2 Attachment', 'Garage 2 Area', 
         'Porch', 'Repair Condition', 'Multi Code', 'Use', 
@@ -49,7 +49,9 @@ def create_pipeline():
     return pipeline
 
 def drop_columns(data):
-    return data.drop(['Other Improvements', 'Neighborhood Code', 'Town Code', 'Address'], axis=1)
+    return data.drop(
+        ['Other Improvements', 'Neighborhood Code', 'Town Code', 'Address', 'Longitude', 'Latitude', 'Site Desirability'], 
+    axis=1)
 
 def extract_description(data):
     with_rooms = data.copy()
