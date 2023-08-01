@@ -54,7 +54,7 @@ def drop_columns(data):
             'Other Improvements', 'Neighborhood Code', 'Town Code'
             # , 'Longitude', 
             # , 'Latitude'
-            # , 'Site Desirability'
+            , 'Site Desirability'
         ], 
     axis=1)
 
