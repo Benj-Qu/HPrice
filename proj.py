@@ -39,7 +39,7 @@ def create_pipeline():
         ('extract_description', FunctionTransformer(extract_description)),
         ('preprocessor', preproc), 
         # ('drop_cols', FunctionTransformer(drop_columns)),
-        ('lin-reg', SGDRegressor()),
+        ('lin-reg', GradientBoostingRegressor()),
     ])
     return pipeline
 
