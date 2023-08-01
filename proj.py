@@ -50,7 +50,7 @@ def create_pipeline():
 
 def drop_columns(data):
     return data.drop(
-        ['Other Improvements', 'Neighborhood Code', 'Town Code', 'Address', 'Longitude', 'Latitude', 'Site Desirability'], 
+        ['Other Improvements', 'Neighborhood Code', 'Town Code', 'Address'], 
     axis=1)
 
 def extract_description(data):
