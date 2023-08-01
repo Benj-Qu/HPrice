@@ -32,7 +32,7 @@ def create_pipeline():
     """Create a machine learning pipeline"""
     preproc = ColumnTransformer(
         transformers=[
-            ('log_trans', FunctionTransformer(np.log), ['Land Square Feet']),
+            ('log_trans', FunctionTransformer(np.log), ['Land Square Feet', 'Building Square Feet', 'Age']),
             ('categorical_cols', OneHotEncoder(drop='first', handle_unknown='ignore'), categoricals()),
         ],
         remainder='passthrough'
