@@ -12,6 +12,8 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import SGDRegressor
+from sklearn.ensemble import GradientBoostingRegressor
 
 def categoricals():
     categoricals = ['Modeling Group', 'Apartments', 'Wall Material', 'Roof Material', 
@@ -37,7 +39,7 @@ def create_pipeline():
         ('extract_description', FunctionTransformer(extract_description)),
         ('preprocessor', preproc), 
         # ('drop_cols', FunctionTransformer(drop_columns)),
-        ('lin-reg', RandomForestRegressor()),
+        ('lin-reg', SGDRegressor()),
     ])
     return pipeline
 
