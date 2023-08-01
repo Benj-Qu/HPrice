@@ -29,4 +29,4 @@ class Model():
 		m = load(os.path.join(self.dir, '519370910113-2.gz'))
 		
 		
-		return np.exp(m.predict(data))
+		return m.predict(data)
