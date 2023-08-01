@@ -14,6 +14,8 @@ from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import SGDRegressor
 from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.pipeline import TransformerMixin
+from sklearn.neighbors import LocalOutlierFactor
 
 def categoricals():
     categoricals = ['Modeling Group', 'Apartments', 'Wall Material', 'Roof Material', 
@@ -23,7 +25,7 @@ def categoricals():
         'Garage 1 Size', 'Garage 1 Material', 'Garage 1 Attachment', 'Garage 1 Area', 
         'Garage 2 Size', 'Garage 2 Material', 'Garage 2 Attachment', 'Garage 2 Area', 
         'Porch', 'Repair Condition', 'Multi Code', 'Use', 
-        'Property Class']
+        'Property Class', 'Story']
     return categoricals
 
 def create_pipeline():
@@ -31,38 +33,44 @@ def create_pipeline():
     preproc = ColumnTransformer(
         transformers=[
             ('log_trans', FunctionTransformer(np.log), ['Land Square Feet']),
-            ('categorical_cols', OneHotEncoder(drop='first'), categoricals())
+            ('categorical_cols', OneHotEncoder(drop='first', handle_unknown='ignore'), categoricals()),
         ],
         remainder='passthrough'
     )
     pipeline = Pipeline([
-        ('drop_cols', FunctionTransformer(drop_columns)),
-        ('category_encoding', FunctionTransformer(substitute_categorical_variables)),
+        ('extract_expense_neighbor', FunctionTransformer(find_expensive_neighborhoods)),
+        ('extract_expense_town', FunctionTransformer(find_expensive_towns)),
         ('extract_description', FunctionTransformer(extract_description)),
+        ('category_encoding', FunctionTransformer(substitute_categorical_variables)),
+        ('drop_cols', FunctionTransformer(drop_columns)),
         ('preprocessor', preproc), 
         ('lin-reg', RandomForestRegressor()),
     ])
     return pipeline
 
 def drop_columns(data):
-    data = data.copy()
-    return data.drop(['Other Improvements', 'Neighborhood Code', 'Town Code'], axis=1)
+    return data.drop(['Other Improvements', 'Neighborhood Code', 'Town Code', 'Address'], axis=1)
 
 def extract_description(data):
     with_rooms = data.copy()
-    with_rooms["Bedrooms"] = with_rooms["Description"].str.findall(".*(\d+) of which are bedrooms.*").str[0].fillna(0).astype(int)
-    with_rooms["Rooms"] = with_rooms["Description"].str.findall(".*(\d+) rooms.*").str[0].fillna(0).astype(int)
-    with_rooms["Bathrooms"] = with_rooms["Description"].str.findall(".*(\d+) of which are bathrooms.*").str[0].fillna(0).astype(int)
+    with_rooms['Sold Year'] = with_rooms['Description'].str.findall(".*sold on \d+/\d+/(\d+).*").str[0].fillna(2000).astype(int)
+    with_rooms['Sold Month'] = with_rooms['Description'].str.findall(".*sold on (\d+)/\d+/\d+.*").str[0].fillna(1).astype(int)
+    with_rooms['Sold Day'] = with_rooms['Description'].str.findall(".*sold on \d+/(\d+)/\d+.*").str[0].fillna(1).astype(int)
+    with_rooms['Story'] = with_rooms['Description'].str.findall(".*(.*) houeshold.*").str[0].fillna('')
+    with_rooms['Address'] = with_rooms['Description'].str.findall(".*located at (.*).*").str[0].fillna('')
+    with_rooms['Rooms'] = with_rooms['Description'].str.findall(".*(\d+) rooms.*").str[0].fillna(1).astype(int)
+    with_rooms['Bedrooms'] = with_rooms['Description'].str.findall(".*(\d+) of which are bedrooms.*").str[0].fillna(1).astype(int)
+    with_rooms['Bathrooms'] = with_rooms['Description'].str.findall(".*(\d+) of which are bathrooms.*").str[0].fillna(0).astype(int)
     return with_rooms.drop('Description', axis=1)
 
-def one_hot_encode(data):
-    for categorical in categoricals():
-        enc = OneHotEncoder(drop='first', handle_unknown='ignore')
-        enc.fit(data[[categorical]])
-        new_cols = pd.DataFrame(enc.transform(data[[categorical]]).todense(),
-            columns=enc.get_feature_names_out(),
-            index=data.index)
-        data = data.join(new_cols) 
+def find_expensive_neighborhoods(data):
+    expensive = [106,580,117,67,94,93,96,64,48,400,461,95,116,83,44,18,143,74,25,166]
+    data['Expensive Neighborhood'] = data['Neighborhood Code'].apply(lambda x: int(x) in expensive)
+    return data
+
+def find_expensive_towns(data, n=3, metric=np.median):
+    expensive = [23, 74, 73, 33, 25, 10, 17, 27, 19, 75]
+    data['Expensive Town'] = data['Town Code'].apply(lambda x: int(x) in expensive)
     return data
 
 def substitute_categorical_variables(data):
@@ -75,7 +83,6 @@ def substitute_categorical_variables(data):
         'Porch', 'Repair Condition', 'Multi Code', 'Use']
     for categorical in categoricals:
         data[categorical] = data[categorical].astype(int)
-
     # data = data.replace({
     #     'Apartments': {
     #         2: 'Two',
@@ -229,3 +236,6 @@ def substitute_categorical_variables(data):
         
     # })
     return data
+
+def remove_outliers(data, variable, lower=-np.inf, upper=np.inf):
+    return data[(data[variable] >= lower) & (data[variable] <= upper)]
