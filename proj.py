@@ -45,7 +45,7 @@ def create_pipeline():
         ('drop_cols', FunctionTransformer(drop_columns)),
         ('feet_front', FunctionTransformer(move_feet_front)),
         ('preprocessor', preproc), 
-        ('show', FunctionTransformer(show_data)),
+        # ('show', FunctionTransformer(show_data)),
         ('interact', FunctionTransformer(interaction)),
         ('lin-reg', RandomForestRegressor()),
     ])
@@ -55,7 +55,7 @@ def interaction(data):
     data = pd.DataFrame(data)
     data.columns = data.columns.astype(str)
     area = data.iloc[:, -1]
-    print(area)
+    data = data.iloc[:, :-1]
     data['area'] = area
     for column in data.columns:
         if column != 'area':
