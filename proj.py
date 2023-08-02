@@ -32,7 +32,7 @@ def create_pipeline():
     """Create a machine learning pipeline"""
     preproc = ColumnTransformer(
         transformers=[
-            # ('log_trans', FunctionTransformer(np.log), ['Building Square Feet']),
+            # ('log_trans', FunctionTransformer(np.log), ['Land Square Feet']),
             ('categorical_cols', OneHotEncoder(drop='first', handle_unknown='ignore'), categoricals()),
         ],
         remainder='passthrough'
@@ -44,9 +44,14 @@ def create_pipeline():
         ('category_encoding', FunctionTransformer(substitute_categorical_variables)),
         ('drop_cols', FunctionTransformer(drop_columns)),
         ('preprocessor', preproc), 
+        # ('show', FunctionTransformer(show_data)),
         ('lin-reg', RandomForestRegressor()),
     ])
     return pipeline
+
+def show_data(data):
+    print(data)
+    return data
 
 def drop_columns(data):
     return data.drop(
@@ -73,7 +78,6 @@ def extract_description(data):
 def find_expensive_neighborhoods(data):
     expensive = [106,580,117,67,94,93,96,64,48,400,461,95,116,83,44,18,143,74,25,166]
     data['Expensive Neighborhood 20'] = data['Neighborhood Code'].apply(lambda x: int(x) in expensive)
-    expensive = [106,580,117,67,94,93,96,64,48,400]
     return data
 
 def find_expensive_towns(data):
