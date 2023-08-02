@@ -43,14 +43,31 @@ def create_pipeline():
         ('extract_description', FunctionTransformer(extract_description)),
         ('category_encoding', FunctionTransformer(substitute_categorical_variables)),
         ('drop_cols', FunctionTransformer(drop_columns)),
+        ('feet_front', FunctionTransformer(move_feet_front)),
         ('preprocessor', preproc), 
-        # ('show', FunctionTransformer(show_data)),
+        ('show', FunctionTransformer(show_data)),
+        ('interact', FunctionTransformer(interaction)),
         ('lin-reg', RandomForestRegressor()),
     ])
     return pipeline
 
+def interaction(data):
+    data = pd.DataFrame(data)
+    data.columns = data.columns.astype(str)
+    area = data.iloc[:, -1]
+    print(area)
+    data['area'] = area
+    for column in data.columns:
+        if column != 'area':
+            data[column] = area * data[column]
+    return data
+
+def move_feet_front(data):
+    data = data[ [ col for col in data.columns if col != 'Building Square Feet' ] + ['Building Square Feet'] ]
+    return data
+
 def show_data(data):
-    print(data)
+    print(data[:, -1])
     return data
 
 def drop_columns(data):
