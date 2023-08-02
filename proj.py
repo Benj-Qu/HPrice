@@ -94,7 +94,7 @@ def extract_description(data):
 
 def find_expensive_neighborhoods(data):
     expensive = [106,580,117,67,94,93,96,64,48,400,461,95,116,83,44,18,143,74,25,166]
-    data['Expensive Neighborhood 20'] = data['Neighborhood Code'].apply(lambda x: int(x) in expensive[:10])
+    data['Expensive Neighborhood 20'] = data['Neighborhood Code'].apply(lambda x: int(x) in expensive)
     return data
 
 def find_expensive_towns(data):
